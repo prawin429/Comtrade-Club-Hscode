@@ -1,0 +1,34 @@
+import requests
+import json
+import pandas as pd
+url='https://comtrade.un.org/api/get?r=251&px=HS&ps=2019&rg=1&cc=252321&type=c&freq=a'
+res = requests.get(url).json()
+json_object = json.dumps(res['dataset'], indent = 4)
+  
+# Writing to sample.json
+with open("sample.json", "w") as outfile:
+    outfile.write(json_object)
+    df_json = pd.read_json('sample.json')
+df_json.to_excel('DATAFILE.xlsx')
+praveen=pd.read_excel('DATAFILE.xlsx', index_col=0)
+Tradequan=praveen[['ptTitle','NetWeight','qtDesc']]
+
+
+url1='https://comtrade.un.org/api/get?r=251&px=HS&ps=2019&rg=1&cc=252329&type=c&freq=a'
+res = requests.get(url1).json()
+json_object = json.dumps(res['dataset'], indent = 4)
+  
+# Writing to sample.json
+with open("sample.json", "w") as outfile:
+    outfile.write(json_object)
+    df_json = pd.read_json('sample.json')
+df_json.to_excel('DATAFILE.xlsx')
+praveen1=pd.read_excel('DATAFILE.xlsx', index_col=0)
+Tradequan1=praveen1[['ptTitle','NetWeight','qtDesc']]
+
+Total = pd.concat([Tradequan, Tradequan1])\
+       .groupby('ptTitle',)['NetWeight']\
+       .sum().reset_index()
+Total1=Total.sort_values(by='NetWeight', ascending = False)
+Total1['ThMetricTons'] = ((Total1['NetWeight'] / 1000)*(0.907185/1000))
+Total1[0:7]
