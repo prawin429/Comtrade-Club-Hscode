@@ -1,0 +1,14 @@
+import requests
+import json
+import pandas as pd
+url='http://api.nsf.gov/services/v1/awards.json?keyword=cement'
+res = requests.get(url).json()
+json_object = json.dumps(res['response'], indent = 4)
+  
+# Writing to sample.json
+with open("sample.json", "w") as outfile:
+    outfile.write(json_object)
+    df_json = pd.read_json('sample.json')
+df_json.to_excel('DATAFILE.xlsx')
+praveen=pd.read_excel('DATAFILE.xlsx', index_col=0)
+praveen=pd.read_excel('DATAFILE.xlsx', index_col=0)
